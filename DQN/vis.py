@@ -38,9 +38,9 @@ agents_amount = 2
 n_actions = env_orig.action_space.n
 state_dim = env_orig.observation_space.shape
 
-HIDDEN = 128
+HIDDEN = 256
 policy_model = QModel(state_dim[0] * state_dim[1] * state_dim[2], n_actions, HIDDEN)
-policy_model.load_state_dict(torch.load("/home/huawei/NonDisPogema/DQN/model.pth"))
+policy_model.load_state_dict(torch.load("DQN/model.pth"))
 policy_model.eval()
 
 

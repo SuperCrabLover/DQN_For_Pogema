@@ -71,7 +71,7 @@ logger = Logger(LOGGER_SIZE)
 opt = torch.optim.Adam(policy_model.parameters(), lr=1e-4)
 
 for i in range(150):
-    session_rewards = [generate_session(env, opt, logger, BATCH_SIZE, policy_model, target_model, TARGET_UPDATE, agents_amount, i, t_max = T_MAX, epsilon=EPSILON, train=True) for i in range(100)]
+    session_rewards = [generate_session(env, opt, logger, BATCH_SIZE, policy_model, target_model, TARGET_UPDATE, agents_amount, i, t_max = T_MAX, epsilon=EPSILON, train=True) for i in range(150)]
     print("Epoch: #{}\tmean reward = {:.3f}\tepsilon = {:.3f}".format(i, np.mean(session_rewards), EPSILON))
 
     EPSILON *= EPSILON_DECAY
@@ -82,7 +82,7 @@ for i in range(150):
         print("Принято!")
         break
 
-torch.save(policy_model.state_dict(), "/home/huawei/NonDisPogema/DQN/model.pth")
+torch.save(policy_model.state_dict(), "DQN/model.pth")
 
 env = gym.make("Pogema-8x8-normal-v0")
 env = AnimationMonitor(env)
