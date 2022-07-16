@@ -20,8 +20,9 @@ class Logger():
     if (batch_size > self._len):
       raise ValueError
     rand_log_inds = random.sample(range(0, self._len), batch_size)
-    temp_np_logs = np.array(self._logs)
-    samples = temp_np_logs[rand_log_inds]
+    samples = []
+    for i in range(len(rand_log_inds)):
+      samples.append(self._logs[rand_log_inds[i]])
     return np.array([i[0] for i in samples]), np.array([i[1] for i in samples]), np.array([i[2] for i in samples]), np.array([i[3] for i in samples]), np.array([i[4] for i in samples])
   
   def is_ready(self, batch_size):

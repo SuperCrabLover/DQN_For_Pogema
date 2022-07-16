@@ -28,12 +28,12 @@ def generate_session(env, opt, logger, batch_size, policy_model, target_model, t
         next_s, r, done, _ = env.step(a)
        
         if train:
-            logger.add_log(np.array([s, a, r, next_s, done]))
+            logger.add_log([s, a, r, next_s, done])
             TL.train_model(np.array([s]), np.array([a]), np.array([r]), np.array([next_s]), np.array([done]), opt, policy_model, target_model, gamma=0.99)
             
             if logger.is_ready(batch_size):
               states, actions, rewards, next_ss, dones = logger.sample_logs(batch_size)
-            TL.train_model(states, actions, rewards, next_ss, dones, opt, policy_model, target_model, gamma=0.99)
+              TL.train_model(states, actions, rewards, next_ss, dones, opt, policy_model, target_model, gamma=0.99)
 
             if t % target_update == 0:
               target_model.load_state_dict(policy_model.state_dict())
@@ -53,19 +53,19 @@ env = OneAgentWrapper(gym.make('Pogema-8x8-normal-v0').unwrapped, agents_amount)
 n_actions = env_orig.action_space.n
 state_dim = env_orig.observation_space.shape
 
-HIDDEN = 128
+HIDDEN = 256
 policy_model = QModel(state_dim[0] * state_dim[1] * state_dim[2], n_actions, HIDDEN)
 target_model = QModel(state_dim[0] * state_dim[1] * state_dim[2], n_actions, HIDDEN)
 target_model.load_state_dict(policy_model.state_dict())
 target_model.eval()
 
-BATCH_SIZE = 128
+BATCH_SIZE = 512
 GAMMA = 0.99
 TARGET_UPDATE = 10
 T_MAX = 1000 #5000
 EPSILON = 0.5
-EPSILON_DECAY = 0.85
-LOGGER_SIZE = 1024
+EPSILON_DECAY = 0.99
+LOGGER_SIZE = 2048
 
 logger = Logger(LOGGER_SIZE)
 opt = torch.optim.Adam(policy_model.parameters(), lr=1e-4)
@@ -76,9 +76,9 @@ for i in range(150):
 
     EPSILON *= EPSILON_DECAY
     if EPSILON <= 1e-4:
-      EPSILON = 0.5
+      EPSILON = 0.5 
 
-    if np.mean(session_rewards) >= 0.950 or i > 5:
+    if np.mean(session_rewards) >= 0.970 or i > 120:
         print("Принято!")
         break
 
